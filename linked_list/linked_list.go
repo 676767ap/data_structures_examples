@@ -3,64 +3,169 @@ package linked_list
 import "fmt"
 
 type Node struct {
-	Value      int
-	Prev, Next *Node
+	val        int
+	prev, next *Node
 }
 
-type LinkedList struct {
-	Head, Tail *Node
+type MyLinkedList struct {
+	lenght     int
+	head, tail *Node
 }
 
-func NewLinkedList() *LinkedList {
-	return &LinkedList{}
-}
-
-func (l *LinkedList) Insert(value int) {
-	node := &Node{Value: value}
-	if l.Head == nil {
-		l.Head = node
-		l.Tail = node
-	} else {
-		node.Prev = l.Tail
-		l.Tail.Next = node
-		l.Tail = node
+func NewLinkedList() MyLinkedList {
+	return MyLinkedList{
+		head:   nil,
+		tail:   nil,
+		lenght: 0,
 	}
 }
 
-func (l *LinkedList) Remove(value int) {
-	if l.Head == nil {
+func (this *MyLinkedList) Get(index int) int {
+	cur := this.head
+	if cur == nil || this.lenght-1 < index {
+		return -1
+	}
+	var idx int
+	for idx <= index {
+		if idx == index {
+			return cur.val
+		}
+		if cur.next == nil {
+			break
+		}
+		cur = cur.next
+		idx++
+	}
+	return 0
+}
+
+func (this *MyLinkedList) AddAtHead(val int) {
+	newNode := &Node{
+		val:  val,
+		next: this.head,
+		prev: nil,
+	}
+	if this.head != nil {
+		this.head.prev = newNode
+		if this.lenght == 1 {
+			this.tail = this.head
+		}
+	}
+	this.head = newNode
+	this.lenght++
+}
+
+func (this *MyLinkedList) AddAtTail(val int) {
+	newNode := &Node{
+		val:  val,
+		next: nil,
+		prev: this.tail,
+	}
+	if this.lenght == 0 {
+		this.head = newNode
+		this.lenght++
 		return
 	}
-
-	current := l.Head
-	for current != nil {
-		if current.Value == value {
-			if current == l.Head {
-				l.Head = current.Next
-				if l.Head != nil {
-					l.Head.Prev = nil
-				}
-			} else if current == l.Tail {
-				l.Tail = current.Prev
-				if l.Tail != nil {
-					l.Tail.Next = nil
-				}
-			} else {
-				current.Prev.Next = current.Next
-				current.Next.Prev = current.Prev
-			}
-			return
-		}
-		current = current.Next
+	if this.tail != nil {
+		this.tail.next = newNode
+	} else {
+		this.head.next = newNode
+		newNode.prev = this.head
 	}
+	this.tail = newNode
+	this.lenght++
 }
 
-func (l *LinkedList) Print() {
-	current := l.Head
-	for current != nil {
-		fmt.Printf("%d ", current.Value)
-		current = current.Next
+func (this *MyLinkedList) AddAtIndex(index int, val int) {
+	cur := this.head
+	if (cur == nil && index != 0) || this.lenght < index {
+		return
 	}
+	var idx int
+	for idx <= index {
+		if idx == index {
+			newNode := &Node{
+				val:  val,
+				next: cur,
+			}
+			if idx == 0 {
+				newNode.prev = nil
+				this.head = newNode
+				if cur != nil {
+					if this.lenght == 1 {
+						this.tail = cur
+					}
+					cur.prev = newNode
+				}
+				break
+			}
+			newNode.prev = cur.prev
+			cur.prev.next = newNode
+			cur.prev = newNode
+		} else if index == this.lenght && idx == this.lenght-1 {
+			newNode := &Node{
+				val:  val,
+				next: nil,
+				prev: cur,
+			}
+			this.tail = newNode
+			cur.next = newNode
+			break
+		}
+		cur = cur.next
+		idx++
+	}
+	this.lenght++
+}
+
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+	cur := this.head
+	if cur == nil || this.lenght <= index {
+		return
+	}
+	if this.lenght == 1 && index == 0 {
+		this.head = nil
+		this.tail = nil
+		this.lenght--
+		return
+	}
+	var idx int
+	for idx <= index {
+		if idx == index {
+			if cur == this.tail {
+				prev := cur.prev
+				prev.next = nil
+				this.tail = prev
+			} else if cur == this.head {
+				if cur.next == nil {
+					this.head = nil
+					break
+				}
+				next := cur.next
+				cur.next = nil
+				next.prev = nil
+				this.head = next
+			} else {
+				prev := cur.prev
+				next := cur.next
+				prev.next = next
+				next.prev = prev
+			}
+			break
+		}
+		cur = cur.next
+		idx++
+	}
+	this.lenght--
+}
+
+func (l *MyLinkedList) Print() {
+	current := l.head
+	for current != nil {
+		fmt.Printf("%d ", current.val)
+		current = current.next
+	}
+	fmt.Println("len: %d", l.lenght)
 	fmt.Println()
 }
 

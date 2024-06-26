@@ -1,14 +1,18 @@
 package main
 
-import "main/linked_list"
+import (
+	circularqueue "main/circular_queue"
+)
 
 func main() {
-	list := linked_list.NewLinkedList()
-	list.Insert(1)
-	list.Insert(2)
-	list.Insert(3)
-	list.Insert(4)
-	list.Print() // Output: 1 2 3 4
-	list.Remove(3)
-	list.Print() // Output: 1 2 4
+	queue := circularqueue.Constructor(2)
+	queue.EnQueue(1)
+	queue.EnQueue(2)
+	queue.DeQueue()
+	queue.EnQueue(3)
+	queue.DeQueue()
+	queue.EnQueue(3)
+	queue.DeQueue()
+	queue.EnQueue(3)
+	queue.DeQueue()
 }
