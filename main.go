@@ -1,18 +1,17 @@
 package main
 
 import (
-	circularqueue "main/circular_queue"
+	"fmt"
+	"main/stack"
 )
 
 func main() {
-	queue := circularqueue.Constructor(2)
-	queue.EnQueue(1)
-	queue.EnQueue(2)
-	queue.DeQueue()
-	queue.EnQueue(3)
-	queue.DeQueue()
-	queue.EnQueue(3)
-	queue.DeQueue()
-	queue.EnQueue(3)
-	queue.DeQueue()
+	minStack := stack.Constructor()
+	minStack.Push(-2)
+	minStack.Push(0)
+	minStack.Push(-3)
+	minStack.GetMin() // return -3
+	minStack.Pop()
+	fmt.Println(minStack.Top())    // return 0
+	fmt.Println(minStack.GetMin()) // return -2
 }
